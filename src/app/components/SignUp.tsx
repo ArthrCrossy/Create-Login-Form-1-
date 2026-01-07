@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 import { Button } from '../../app/components/Button/index';
+import { Input } from "./Input";
 
 
 interface SignUpFormData {
@@ -118,7 +119,7 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <User className="h-5 w-5 text-gray-400" />
               </div>
-              <input
+              <Input
                 id="firstName"
                 type="text"
                 {...register('firstName', {
@@ -148,7 +149,7 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <User className="h-5 w-5 text-gray-400" />
               </div>
-              <input
+              <Input
                 id="lastName"
                 type="text"
                 {...register('lastName', {
@@ -178,7 +179,7 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Mail className="h-5 w-5 text-gray-400" />
               </div>
-              <input
+              <Input
                 id="email"
                 type="email"
                 {...register('email', {
@@ -208,7 +209,7 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-gray-400" />
               </div>
-              <input
+              <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 {...register('password', {
@@ -253,7 +254,7 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-gray-400" />
               </div>
-              <input
+              <Input
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
                 {...register('confirmPassword', {
@@ -285,7 +286,7 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
 
           {/* Terms and Conditions */}
           <div className="flex items-start">
-            <input
+            <Input
               id="agreeToTerms"
               type="checkbox"
               {...register('agreeToTerms', {
