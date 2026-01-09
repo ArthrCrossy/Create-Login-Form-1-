@@ -7,6 +7,7 @@
 
 
     interface LoginFormData {
+      name: string;
       email: string;
       password: string;
       rememberMe: boolean;
@@ -17,6 +18,15 @@
       onForgotPassword?: () => void;
     }
 
+    interface LoginResponse {
+        token: string;
+        user: {
+            id: string;
+            email: string;
+            name?: string;
+        };
+    }
+
     export function Login({ onSwitchToSignUp, onForgotPassword }: LoginProps) {
       const [showPassword, setShowPassword] = useState(false);
       const {
@@ -25,16 +35,37 @@
         formState: { errors },
       } = useForm<LoginFormData>();
 
-      const onSubmit = (data: LoginFormData) => {
-        console.log('Login data:', data);
-        // Handle login logic here
-        alert(`Logging in with email: ${data.email}`);
-      };
 
-      const handleOAuthLogin = (provider: string) => {
+        const onSubmit = async (data: LoginFormData) => {
+            try {
+                const res = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: data.email,
+                        password: data.password,
+                    }),
+                });
+
+                if (!res.ok) {
+                    throw new Error("Invalid credentials");
+                }
+
+                const result: LoginResponse = await res.json();
+                localStorage.setItem("token", result.token);
+
+            } catch (err) {
+                alert("Email ou senha inválidossssssssssssssss");
+            }
+        };
+
+
+        const handleOAuthLogin = (provider: string) => {
         console.log(`OAuth login with ${provider}`);
         alert(`Redirecting to ${provider} login...`);
       };
+
+
 
       return (
         <div className="w-full max-w-md mx-auto p-6">
@@ -44,7 +75,6 @@
               <p className="text-gray-600">Please login to your account</p>
             </div>
 
-            {/* OAuth Buttons */}
             <div className="space-y-3 mb-6">
                 <Button
                     type="button"
