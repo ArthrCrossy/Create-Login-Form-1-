@@ -21,9 +21,26 @@
         getValues,
       } = useForm<ForgotPasswordFormData>();
 
-      const onSubmit = (data: ForgotPasswordFormData) => {
-        console.log('Password reset requested for:', data.email);
-        // Handle password reset logic here
+      const onSubmit = async (data: ForgotPasswordFormData) => {
+
+          try {
+              const res = await fetch("/api/auth/newPassword", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                      email: data.email,
+                  }),
+              });
+
+              if (!res.ok) {
+                  throw new Error("Invalid credentials");
+              }
+
+          } catch (err) {
+              alert("Email inválido");
+          }
+
+
         setEmailSent(true);
       };
 
