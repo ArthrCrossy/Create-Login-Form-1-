@@ -1,11 +1,14 @@
     import { useState } from 'react';
     import { useForm } from 'react-hook-form';
-    import { Mail, ArrowLeft, CheckCircle } from 'lucide-react';
+    import {Mail, ArrowLeft, CheckCircle, Lock, EyeOff, Eye} from 'lucide-react';
     import { Button } from '../../app/components/Button/index';
+    import { Input } from "./Input";
 
 
     interface ForgotPasswordFormData {
-      email: string;
+        password: string;
+        confirmPassword: string;
+        email: string;
     }
 
     interface ForgotPasswordProps {
@@ -13,15 +16,21 @@
     }
 
     export function ForgotPassword({ onBackToLogin }: ForgotPasswordProps) {
-      const [emailSent, setEmailSent] = useState(false);
+        const [showPassword, setShowPassword] = useState(false);
+        const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+        const [emailSent, setEmailSent] = useState(false);
       const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        getValues,
+          register,
+          handleSubmit,
+          formState: { errors },
+          getValues,
+          watch
       } = useForm<ForgotPasswordFormData>();
 
-      const onSubmit = async (data: ForgotPasswordFormData) => {
+        const password = watch('password');
+
+
+        const onSubmit = async (data: ForgotPasswordFormData) => {
 
           try {
               const res = await fetch("/api/auth/newPassword", {
@@ -29,6 +38,8 @@
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                       email: data.email,
+                      password: data.password,
+                      confirmPassword: data.confirmPassword
                   }),
               });
 
@@ -111,7 +122,7 @@
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Mail className="h-5 w-5 text-gray-400" />
                   </div>
-                  <input
+                  <Input
                     id="email"
                     type="email"
                     {...register('email', {
@@ -127,6 +138,87 @@
                     placeholder="Enter your email"
                   />
                 </div>
+                  <div>
+                      <label htmlFor="password" className="block text-sm mb-2 text-gray-700">
+                          Password
+                      </label>
+                      <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <Lock className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                              id="password"
+                              type={showPassword ? 'text' : 'password'}
+                              {...register('password', {
+                                  required: 'Password is required',
+                                  minLength: {
+                                      value: 8,
+                                      message: 'Password must be at least 8 characters',
+                                  },
+                                  pattern: {
+                                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                                      message: 'Password must contain uppercase, lowercase, and number',
+                                  },
+                              })}
+                              className={`w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                  errors.password ? 'border-red-500' : 'border-gray-300'
+                              }`}
+                              placeholder="Create a password"
+                          />
+                          <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                          >
+                              {showPassword ? (
+                                  <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                              ) : (
+                                  <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                              )}
+                          </button>
+                      </div>
+                      {errors.password && (
+                          <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+                      )}
+                  </div>
+
+                  <div>
+                      <label htmlFor="confirmPassword" className="block text-sm mb-2 text-gray-700">
+                          Confirm Password
+                      </label>
+                      <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <Lock className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <Input
+                              id="confirmPassword"
+                              type={showConfirmPassword ? 'text' : 'password'}
+                              {...register('confirmPassword', {
+                                  required: 'Please confirm your password',
+                                  validate: (value) =>
+                                      value === password || 'Passwords do not match',
+                              })}
+                              className={`w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                  errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                              }`}
+                              placeholder="Confirm your password"
+                          />
+                          <button
+                              type="button"
+                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                          >
+                              {showConfirmPassword ? (
+                                  <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                              ) : (
+                                  <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                              )}
+                          </button>
+                      </div>
+                      {errors.confirmPassword && (
+                          <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
+                      )}
+                  </div>
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
                 )}

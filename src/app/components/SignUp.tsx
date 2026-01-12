@@ -300,7 +300,6 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
             )}
           </div>
 
-          {/* Confirm Password Field */}
           <div>
             <label htmlFor="confirmPassword" className="block text-sm mb-2 text-gray-700">
               Confirm Password
