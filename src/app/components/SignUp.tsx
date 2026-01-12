@@ -18,6 +18,31 @@ interface SignUpProps {
   onSwitchToLogin?: () => void;
 }
 
+interface SignUpFormData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    agreeToTerms: boolean;
+}
+
+type RegisterResponse =
+    | {
+    success: true;
+    message: string;
+    data: {
+        user: { id: number; name: string; email: string };
+        token: string;
+    };
+}
+    | {
+    success: false;
+    message: string;
+    error?: string;
+};
+
+
 export function SignUp({ onSwitchToLogin }: SignUpProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -28,20 +53,50 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
     formState: { errors },
   } = useForm<SignUpFormData>();
 
-  const password = watch('password');
+        const password = watch('password');
 
-  const onSubmit = (data: SignUpFormData) => {
-    console.log('Sign up data:', data);
-    // Handle sign up logic here
-    alert(`Account created for: ${data.email}`);
-  };
+        const onSubmit = (data: SignUpFormData) => {
+            console.log('Sign up data:', data);
+            // Handle sign up logic here
+            alert(`Account created for: ${data.email}`);
+        };
 
-  const handleOAuthSignUp = (provider: string) => {
-    console.log(`OAuth sign up with ${provider}`);
-    alert(`Redirecting to ${provider} sign up...`);
-  };
+        const handleOAuthSignUp = (provider: string) => {
+            console.log(`OAuth sign up with ${provider}`);
+            alert(`Redirecting to ${provider} sign up...`);
+        };
 
-  return (
+    async function signUpRequest(data: SignUpFormData): Promise<RegisterResponse> {
+
+        const res = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", },
+            body: JSON.stringify({
+                name: `${data.firstName} ${data.lastName}`,
+                email: data.email,
+                password: data.password,
+            }),
+        });
+
+        const result: RegisterResponse = await res.json(); // ✅ LÊ UMA VEZ
+
+        if (!res.ok || !result.success) {
+            return {
+                success: false,
+                message: result.message || "Erro ao criar conta",
+            };
+        }
+
+        const token = result.data?.token; // ✅ token vem aqui
+
+        localStorage.setItem("token", token);
+        alert("Conta criada!");
+
+        return result;
+    }
+
+
+    return (
     <div className="w-full max-w-md mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg p-8">
         <div className="text-center mb-8">
@@ -109,7 +164,7 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={handleSubmit(signUpRequest)} className="space-y-5">
           {/* First Name Field */}
           <div>
             <label htmlFor="firstName" className="block text-sm mb-2 text-gray-700">
