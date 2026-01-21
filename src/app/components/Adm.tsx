@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MessageSquare, PenLine, BarChart3, Home, FileText, Settings, Heart, MessageCircle, Share2, ThumbsUp } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Card } from '../components/ui/card';
 import { ScrollArea } from '../components/ui/scroll-area';
+import { publishBroadcast, listBroadcasts, markBroadcastRead } from "../lib/apiAdm";
 
-interface Message {
+
+interface Message   {
     id: number;
     type: string;
     title: string;
@@ -28,108 +30,33 @@ export default function App() {
     const [message, setMessage] = useState('');
     const [activeTab, setActiveTab] = useState('home');
 
-    const recentMessages: Message[] = [
-        {
-            id: 1,
-            type: 'Announcement Image',
-            title: 'New Update is live!',
-            description: 'Check them out!',
-            category: 'update',
-            author: 'Admin',
-            likes: 24,
-            comments: 5
-        },
-        {
-            id: 2,
-            type: 'Feedback Image',
-            title: 'We value your feedback!',
-            description: 'Let us know your thoughts...',
-            category: 'feedback',
-            author: 'Admin',
-            likes: 18,
-            comments: 12
-        },
-        {
-            id: 3,
-            type: 'Reminder Image',
-            title: "Don't forget about this upcoming event!",
-            description: 'reminder event',
-            category: 'reminder',
-            author: 'Admin',
-            likes: 32,
-            comments: 8
-        },
-        {
-            id: 4,
-            type: 'Reminder Image',
-            title: "Don't forget about the upcoming event!",
-            description: 'reminder event',
-            category: 'reminder',
-            author: 'Admin',
-            likes: 45,
-            comments: 15
-        },
-        {
-            id: 5,
-            type: 'Reminder Image',
-            title: "Don't forget about the upcoming event!",
-            description: 'reminder event',
-            category: 'reminder',
-            author: 'Admin',
-            likes: 28,
-            comments: 6
-        },
-        {
-            id: 6,
-            type: 'Reminder Image',
-            title: "Don't forget about the upcoming event!",
-            description: 'reminder event',
-            category: 'reminder',
-            author: 'Admin',
-            likes: 51,
-            comments: 20
-        },
-        {
-            id: 7,
-            type: 'Reminder Image',
-            title: "Don't forget about the upcoming event!",
-            description: 'reminder event',
-            category: 'reminder',
-            author: 'Admin',
-            likes: 37,
-            comments: 11
-        },
-        {
-            id: 8,
-            type: 'Reminder Image',
-            title: "Don't forget about the upcoming event!",
-            description: 'reminder event',
-            category: 'reminder',
-            author: 'Admin',
-            likes: 42,
-            comments: 9
-        },
-        {
-            id: 9,
-            type: 'Reminder Image',
-            title: "Don't forget about the upcoming event!",
-            description: 'reminder event',
-            category: 'reminder',
-            author: 'Admin',
-            likes: 29,
-            comments: 7
-        },
-        {
-            id: 10,
-            type: 'Reminder Image',
-            title: "Don't forget about the upcoming event!",
-            description: 'reminder event',
-            category: 'reminder',
-            author: 'Admin',
-            likes: 55,
-            comments: 18
-        }
-    ];
+    const [recentMessages, setRecentMessages] = useState<Message[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const data = await listBroadcasts(50, 0);
+
+                const mapped: Message[] = data.items.map((row: any) => ({
+                    id: row.id,
+                    type: "Broadcast",
+                    title: row.title,
+                    description: row.body,
+                    category: "update",
+                    author: "Admin",
+                    likes: 0,
+                    comments: 0,
+                }));
+
+                setRecentMessages(mapped);
+            } catch (e) {
+                console.error(e);
+            }
+        })();
+    }, []);
+
+
+
 
     const userInteractions: UserInteraction[] = [
         {
@@ -163,10 +90,35 @@ export default function App() {
         console.log('Preview:', message);
     };
 
-    const handlePublish = () => {
-        console.log('Published:', message);
-        setMessage('');
+    const handlePublish = async () => {
+        try {
+            if (!message.trim()) return;
+
+            await publishBroadcast({
+                title: "Announcement",
+                body: message,
+            });
+
+            setMessage("");
+
+            const data = await listBroadcasts(50, 0);
+            const mapped: Message[] = data.items.map((row: any) => ({
+                id: row.id,
+                type: "Broadcast",
+                title: row.title,
+                description: row.body,
+                category: "update",
+                author: "Admin",
+                likes: 0,
+                comments: 0,
+            }));
+            setRecentMessages(mapped);
+        } catch (e) {
+            console.error(e);
+            alert("Erro ao publicar");
+        }
     };
+
 
     const getInteractionIcon = (icon: string) => {
         switch (icon) {
@@ -183,17 +135,13 @@ export default function App() {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
-            {/* Header */}
             <header className="bg-gray-800 text-white px-6 py-4">
                 <div className="max-w-7xl mx-auto">
                     <h1 className="text-xl font-semibold">Admin User</h1>
                     <p className="text-sm text-gray-400">Welcome to the Admin Panel</p>
                 </div>
             </header>
-
-            {/* Main Content */}
             <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-6 pb-20">
-                {/* Top Action Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <Card className="p-6 bg-white hover:shadow-lg transition-shadow cursor-pointer">
                         <div className="flex flex-col items-center justify-center text-center">
