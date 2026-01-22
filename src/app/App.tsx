@@ -1,27 +1,34 @@
 import { useState } from 'react';
-import { Login } from './components/Login';
-import { SignUp } from './components/SignUp';
-import { ForgotPassword } from './components/ForgotPassword';
+import { Login } from '../app/components/Login';
+import { SignUp } from '../app/components/SignUp';
+import Adm from '../app/components/Adm';
+import { ForgotPassword } from '../app/components/ForgotPassword';
+import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
 
 type ViewType = 'login' | 'signup' | 'forgot-password';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewType>('login');
 
-  return (
-    <div className="size-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      {currentView === 'login' && (
-        <Login
-          onSwitchToSignUp={() => setCurrentView('signup')}
-          onForgotPassword={() => setCurrentView('forgot-password')}
-        />
-      )}
-      {currentView === 'signup' && (
-        <SignUp onSwitchToLogin={() => setCurrentView('login')} />
-      )}
-      {currentView === 'forgot-password' && (
-        <ForgotPassword onBackToLogin={() => setCurrentView('login')} />
-      )}
-    </div>
+    function LoginRoute() {
+        const navigate = useNavigate();
+        return (
+            <Login
+                onSwitchToSignUp={() => navigate("/signup")}
+                onForgotPassword={() => navigate("/forgot-password")}
+            />
+        );
+    }
+
+
+    return (
+      <BrowserRouter>
+          <Routes>
+              <Route path="/" element={<LoginRoute />} />
+              <Route path="/adm" element={<Adm />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+          </Routes>
+      </BrowserRouter>
   );
 }
