@@ -26,7 +26,7 @@ interface UserInteraction {
     icon: 'like' | 'comment' | 'share';
 }
 
-export default function App() {
+export default function Adm() {
     const [message, setMessage] = useState('');
     const [activeTab, setActiveTab] = useState('home');
 

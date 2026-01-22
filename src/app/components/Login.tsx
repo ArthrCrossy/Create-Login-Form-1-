@@ -1,14 +1,9 @@
     import { useState } from 'react';
     import { useForm } from 'react-hook-form';
     import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
-    import {Button, GoogleIcon} from '../../app/components/Button/index';
+    import { Button } from '../../app/components/Button/index';
     import { Input } from './../../app/components/Input/index';
-    import {BrowserRouter, useNavigate} from "react-router-dom";
-    import Teste from "../../../src/app/components/Adm"
-    import {createRoot} from "react-dom/client";
-
-
-
+    import { useNavigate } from "react-router-dom";
 
     interface LoginFormData {
       name: string;
@@ -34,7 +29,8 @@
 
     export function Login({ onSwitchToSignUp, onForgotPassword }: LoginProps) {
       const [showPassword, setShowPassword] = useState(false);
-      const {
+      const navigate = useNavigate();
+        const {
         register,
         handleSubmit,
         formState: { errors },
@@ -43,8 +39,6 @@
 
         const onSubmit = async (data: LoginFormData) => {
             try {
-
-                console.log("chegueiaqui")
 
                 const res = await fetch("/api/auth/login", {
                     method: "POST",
@@ -61,17 +55,10 @@
 
                 const result: LoginResponse = await res.json();
                 localStorage.setItem("token", result.token);
-
-                localStorage.setItem("token", result.token);
                 localStorage.setItem("role", result.user.role);
 
                 if (result.user.role === "admin") {
-                    createRoot(document.getElementById("root")!).render(
-                        <BrowserRouter>
-                            <Teste/>
-                        </BrowserRouter>
-                    );
-
+                    navigate("/adm");
                 } else {
                    // navigate("/dashboard");
                 }

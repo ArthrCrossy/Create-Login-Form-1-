@@ -3,6 +3,7 @@
     import {Mail, ArrowLeft, CheckCircle, Lock, EyeOff, Eye} from 'lucide-react';
     import { Button } from '../../app/components/Button/index';
     import { Input } from "./Input";
+    import {useNavigate} from "react-router-dom";
 
 
     interface ForgotPasswordFormData {
@@ -19,6 +20,8 @@
         const [showPassword, setShowPassword] = useState(false);
         const [showConfirmPassword, setShowConfirmPassword] = useState(false);
         const [emailSent, setEmailSent] = useState(false);
+        const navigate = useNavigate();
+
       const {
           register,
           handleSubmit,
@@ -98,8 +101,8 @@
         <div className="w-full max-w-md mx-auto p-6">
           <div className="bg-white rounded-lg shadow-lg p-8">
             <button
-              onClick={onBackToLogin}
-              className="flex items-center text-gray-600 hover:text-gray-800 mb-6"
+                onClick={() => navigate("/")}
+                className="flex items-center text-gray-600 hover:text-gray-800 mb-6"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Login

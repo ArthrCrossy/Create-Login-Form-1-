@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
+import {ArrowLeft, Eye, EyeOff, Lock, Mail, User} from 'lucide-react';
 import { Button } from '../../app/components/Button/index';
 import { Input } from "./Input";
+import {useNavigate} from "react-router-dom";
 
 
 interface SignUpFormData {
@@ -44,7 +45,8 @@ type RegisterResponse =
 
 
 export function SignUp({ onSwitchToLogin }: SignUpProps) {
-  const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register,
@@ -103,6 +105,13 @@ export function SignUp({ onSwitchToLogin }: SignUpProps) {
           <h1 className="text-3xl mb-2">Create Account</h1>
           <p className="text-gray-600">Sign up to get started</p>
         </div>
+          <button
+              onClick={() => navigate("/")}
+              className="flex items-center text-gray-600 hover:text-gray-800 mb-6"
+          >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Login
+          </button>
 
         {/* OAuth Buttons */}
         <div className="space-y-3 mb-6">
