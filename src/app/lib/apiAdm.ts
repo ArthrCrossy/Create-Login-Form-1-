@@ -8,6 +8,7 @@ function authHeaders(): HeadersInit {
 }
 
 export async function publishBroadcast(payload: { title: string; body: string }) {
+    console.log("✅ broadcast.routes carregou");
     const res = await fetch(`${API_BASE}/admin/broadcast`, {
         method: "POST",
         headers: {
