@@ -22,13 +22,16 @@ export default function App() {
 
 
     return (
-      <BrowserRouter>
-          <Routes>
-              <Route path="/" element={<LoginRoute />} />
-              <Route path="/adm" element={<Adm />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-          </Routes>
-      </BrowserRouter>
+        <MessageProvider>
+          <BrowserRouter>
+              <Routes>
+                  <Route path="/" element={<LoginRoute />} />
+                  <Route path="/adm" element={<Adm />} />
+                  <Route path="/adm/user-inbox" element={<UserInbox />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+              </Routes>
+          </BrowserRouter>
+        </MessageProvider>
   );
 }

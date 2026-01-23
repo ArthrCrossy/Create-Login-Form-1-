@@ -143,14 +143,18 @@ export default function Adm() {
             </header>
             <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-6 pb-20">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <Card className="p-6 bg-white hover:shadow-lg transition-shadow cursor-pointer">
-                        <div className="flex flex-col items-center justify-center text-center">
-                            <div className="bg-blue-100 p-4 rounded-lg mb-3">
-                                <MessageSquare className="h-8 w-8 text-blue-600" />
+                    <Link to="/adm/user-inbox" className="block">
+                        <Card className="p-6 bg-white hover:shadow-lg transition-shadow cursor-pointer">
+                            <div className="flex flex-col items-center justify-center text-center">
+                                <div className="bg-blue-100 p-4 rounded-lg mb-3">
+                                    <MessageSquare className="h-8 w-8 text-blue-600" />
+                                </div>
+                                <h3 className="font-medium text-gray-900">
+                                    Mensagens recebidas
+                                </h3>
                             </div>
-                            <h3 className="font-medium text-gray-900">Messages</h3>
-                        </div>
-                    </Card>
+                        </Card>
+                    </Link>
 
                     <Card className="p-6 bg-white hover:shadow-lg transition-shadow cursor-pointer">
                         <div className="flex flex-col items-center justify-center text-center">
