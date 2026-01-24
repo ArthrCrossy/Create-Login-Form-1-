@@ -4,6 +4,8 @@ import { SignUp } from '../app/components/SignUp';
 import Adm from '../app/components/Adm';
 import { ForgotPassword } from '../app/components/ForgotPassword';
 import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
+import {UserInbox} from "./components/UserInbox";
+import {MessageProvider} from "./components/UseMessage";
 
 type ViewType = 'login' | 'signup' | 'forgot-password';
 

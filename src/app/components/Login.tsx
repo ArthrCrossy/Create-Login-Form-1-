@@ -60,7 +60,7 @@
                 if (result.user.role === "admin") {
                     navigate("/adm");
                 } else {
-                   // navigate("/dashboard");
+                    console.log("ei")
                 }
 
             } catch (err) {
