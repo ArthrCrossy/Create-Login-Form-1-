@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+// src/components/UseMessage.tsx
+import React, { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
+import { listBroadcasts, markBroadcastRead as apiMarkRead } from "../lib/apiAdm"; // ajuste o path
 
 export interface Message {
-    id: string;
+    id: string;          // no back vem number -> aqui vira string
     title: string;
     content: string;
     timestamp: Date;
@@ -11,40 +13,54 @@ export interface Message {
 
 interface MessageContextType {
     messages: Message[];
-    sendMessage: (title: string, content: string) => void;
-    markAsRead: (id: string) => void;
+    refresh: () => Promise<void>;
+    markAsRead: (id: string) => Promise<void>;
     unreadCount: number;
 }
 
 const MessageContext = createContext<MessageContextType | undefined>(undefined);
 
+function mapRowToMessage(row: any): Message {
+    return {
+        id: String(row.id),
+        title: row.title ?? "",
+        content: row.body ?? "",
+        timestamp: new Date(row.created_at),
+        isRead: Boolean(row.is_read),
+        sender: "Admin",
+    };
+}
+
 export function MessageProvider({ children }: { children: ReactNode }) {
     const [messages, setMessages] = useState<Message[]>([]);
 
-    const sendMessage = (title: string, content: string) => {
-        const newMessage: Message = {
-            id: Date.now().toString(),
-            title,
-            content,
-            timestamp: new Date(),
-            isRead: false,
-            sender: 'Admin',
-        };
-        setMessages((prev) => [newMessage, ...prev]);
+    const refresh = async () => {
+        const data = await listBroadcasts(50, 0); // { items, limit, offset }
+        const items = Array.isArray(data?.items) ? data.items : [];
+        setMessages(items.map(mapRowToMessage));
     };
 
-    const markAsRead = (id: string) => {
+    useEffect(() => {
+        refresh().catch(console.error);
+    }, []);
+
+    const markAsRead = async (id: string) => {
+        const messageId = Number(id);
+        if (!Number.isFinite(messageId)) return;
+        await apiMarkRead(messageId);
+        // atualiza UI local
         setMessages((prev) =>
-            prev.map((msg) =>
-                msg.id === id ? { ...msg, isRead: true } : msg
-            )
+            prev.map((m) => (m.id === id ? { ...m, isRead: true } : m))
         );
     };
 
-    const unreadCount = messages.filter((msg) => !msg.isRead).length;
+    const unreadCount = useMemo(
+        () => messages.filter((m) => !m.isRead).length,
+        [messages]
+    );
 
     return (
-        <MessageContext.Provider value={{ messages, sendMessage, markAsRead, unreadCount }}>
+        <MessageContext.Provider value={{ messages, refresh, markAsRead, unreadCount }}>
             {children}
         </MessageContext.Provider>
     );
@@ -52,8 +68,6 @@ export function MessageProvider({ children }: { children: ReactNode }) {
 
 export function useMessages() {
     const context = useContext(MessageContext);
-    if (!context) {
-        throw new Error('useMessages must be used within a MessageProvider');
-    }
+    if (!context) throw new Error("useMessages must be used within a MessageProvider");
     return context;
 }

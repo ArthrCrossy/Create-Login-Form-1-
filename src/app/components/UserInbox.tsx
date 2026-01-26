@@ -15,16 +15,15 @@ export function UserInbox() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center text-center">
-            <Inbox className="h-12 w-12 mb-4 text-gray-400" />
-            <p className="text-sm text-gray-500">Nenhuma mensagem recebida</p>
-            <Card className="w-full max-w-2xl">
+        <div className="w-screen h-screen items-center justify-center text-center">
+            <Card className="w-screen h-screen text-center">
                 <CardHeader>
-                    <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
+                    <div className="items-center justify-center text-center">
+                        <CardTitle className="flex items-center justify-center gap-2">
                             <Inbox className="size-5" />
                             Caixa de Mensagens
                         </CardTitle>
+
                         {unreadCount > 0 && (
                             <Badge variant="destructive" className="rounded-full">
                                 {unreadCount} nova{unreadCount !== 1 ? 's' : ''}
@@ -36,9 +35,9 @@ export function UserInbox() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <ScrollArea className="h-[500px] pr-4">
+                    <ScrollArea className="h-[800px] pr-4">
                         {messages.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
+                            <div className="w-screen h-screen">
                                 <Inbox className="size-12 mb-3 opacity-50" />
                                 <p>Nenhuma mensagem recebida</p>
                             </div>
@@ -50,12 +49,12 @@ export function UserInbox() {
                                         className={`${!message.isRead ? 'border-primary bg-primary/5' : 'bg-muted/30'}`}
                                     >
                                         <CardHeader className="pb-3">
-                                            <div className="flex items-start justify-between gap-2">
-                                                <div className="flex items-center gap-2 flex-1">
+                                            <div className="items-center justify-center text-center gap-2">
+                                                <div className="items-center justify-center text-center gap-2 flex-1">
                                                     {message.isRead ? (
-                                                        <MailOpen className="size-4 text-muted-foreground" />
+                                                        <MailOpen className="items-center justify-center text-center size-4 text-muted-foreground" />
                                                     ) : (
-                                                        <Mail className="size-4 text-primary" />
+                                                        <Mail className="items-center justify-center text-center size-4 text-primary" />
                                                     )}
                                                     <CardTitle className="text-base">
                                                         {message.title}
