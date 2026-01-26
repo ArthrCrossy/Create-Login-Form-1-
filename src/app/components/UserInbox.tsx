@@ -1,14 +1,25 @@
-import { useMessages } from '../components/UseMessage';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-import { ScrollArea } from '../components/ui/scroll-area';
-import { Inbox, Mail, MailOpen, Clock } from 'lucide-react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { useEffect } from "react";
+import { useMessages } from "../components/UseMessage";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Inbox, Mail, MailOpen, Clock, RefreshCcw } from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export function UserInbox() {
-    const { messages, markAsRead, unreadCount } = useMessages();
+    const { messages, markAsRead, unreadCount, refresh } = useMessages();
+
+        useEffect(() => {
+            refresh().catch(console.error);
+        }, [refresh]);
 
     const formatDate = (date: Date) => {
         return format(date, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
@@ -26,14 +37,25 @@ export function UserInbox() {
 
                         {unreadCount > 0 && (
                             <Badge variant="destructive" className="rounded-full">
-                                {unreadCount} nova{unreadCount !== 1 ? 's' : ''}
+                                {unreadCount} nova{unreadCount !== 1 ? "s" : ""}
                             </Badge>
                         )}
                     </div>
-                    <CardDescription>
+
+                    <CardDescription className="flex items-center justify-center gap-2">
                         Mensagens recebidas do administrador
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => refresh().catch(console.error)}
+                            className="gap-2"
+                        >
+                            <RefreshCcw className="size-4" />
+                            Atualizar
+                        </Button>
                     </CardDescription>
                 </CardHeader>
+
                 <CardContent>
                     <ScrollArea className="h-[800px] pr-4">
                         {messages.length === 0 ? (
@@ -46,7 +68,11 @@ export function UserInbox() {
                                 {messages.map((message) => (
                                     <Card
                                         key={message.id}
-                                        className={`${!message.isRead ? 'border-primary bg-primary/5' : 'bg-muted/30'}`}
+                                        className={`${
+                                            !message.isRead
+                                                ? "border-primary bg-primary/5"
+                                                : "bg-muted/30"
+                                        }`}
                                     >
                                         <CardHeader className="pb-3">
                                             <div className="items-center justify-center text-center gap-2">
@@ -60,22 +86,32 @@ export function UserInbox() {
                                                         {message.title}
                                                     </CardTitle>
                                                 </div>
+
                                                 {!message.isRead && (
-                                                    <Badge variant="default" className="shrink-0">Nova</Badge>
+                                                    <Badge variant="default" className="shrink-0">
+                                                        Nova
+                                                    </Badge>
                                                 )}
                                             </div>
+
                                             <div className="flex items-center gap-1 text-xs text-muted-foreground pt-1">
                                                 <Clock className="size-3" />
                                                 {formatDate(message.timestamp)}
                                             </div>
                                         </CardHeader>
+
                                         <CardContent className="pb-3 space-y-3">
-                                            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                                            <p className="text-sm whitespace-pre-wrap">
+                                                {message.content}
+                                            </p>
+
                                             {!message.isRead && (
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    onClick={() => markAsRead(message.id)}
+                                                    onClick={() =>
+                                                        markAsRead(message.id).catch(console.error)
+                                                    }
                                                     className="w-full"
                                                 >
                                                     Marcar como lida
@@ -90,6 +126,5 @@ export function UserInbox() {
                 </CardContent>
             </Card>
         </div>
-
     );
 }

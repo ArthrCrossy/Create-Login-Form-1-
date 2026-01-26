@@ -28,7 +28,7 @@ export async function listBroadcasts(limit = 20, offset = 0) {
     });
 
     if (!res.ok) throw new Error(await res.text());
-    return res.json(); // { items, limit, offset }
+    return res.json();
 }
 
 export async function markBroadcastRead(messageId: number) {

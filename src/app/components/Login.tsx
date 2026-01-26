@@ -59,8 +59,10 @@
 
                 if (result.user.role === "admin") {
                     navigate("/adm");
-                } else {
-                    console.log("ei")
+                }
+
+                if (result.user.role === "user") {
+                    navigate("/adm");
                 }
 
             } catch (err) {
