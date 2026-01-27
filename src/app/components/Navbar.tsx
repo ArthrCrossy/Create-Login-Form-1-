@@ -1,5 +1,6 @@
 import { Search, Bell, User } from 'lucide-react';
 import { Button } from '../components/Button';
+import { Link } from 'react-router-dom';
 
 export function Navbar() {
     return (
@@ -14,9 +15,9 @@ export function Navbar() {
                         <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
                             Mensagens
                         </a>
-                        <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+                        <Link to="/userpage/contato" className="text-sm text-gray-600 hover:text-gray-900">
                             Contato
-                        </a>
+                        </Link>
                     </div>
                 </div>
 

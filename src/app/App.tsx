@@ -7,11 +7,13 @@ import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
 import {UserInbox} from "./components/UserInbox";
 import {MessageProvider, useMessages} from "./components/UseMessage";
 import UserPage from "./components/UserPage";
+import ContatoSendUserToAdm from "../app/components/ContatoSendUserToAdm";
 
 type ViewType = 'login' | 'signup' | 'forgot-password';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<ViewType>('login');
+
+    const [currentView, setCurrentView] = useState<ViewType>('login');
 
     function LoginRoute() {
         const navigate = useNavigate();
@@ -23,19 +25,15 @@ export default function App() {
         );
     }
 
-
     return (
-        <MessageProvider>
-          <BrowserRouter>
-              <Routes>
-                  <Route path="/" element={<LoginRoute />} />
-                  <Route path="/adm" element={<Adm />} />
-                  <Route path="/adm/user-inbox" element={<UserInbox />} />
-                  <Route path="/UserPage" element={<UserPage />} />
-                  <Route path="/signup" element={<SignUp />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-              </Routes>
-          </BrowserRouter>
-        </MessageProvider>
-  );
+        <Routes>
+            <Route path="/" element={<LoginRoute />} />
+            <Route path="/adm" element={<Adm />} />
+            <Route path="/adm/user-inbox" element={<UserInbox />} />
+            <Route path="/userpage" element={<UserPage />} />
+            <Route path="/userpage/contato" element={<ContatoSendUserToAdm />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+        </Routes>
+    );
 }
