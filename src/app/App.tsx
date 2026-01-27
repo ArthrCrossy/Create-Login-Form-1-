@@ -6,6 +6,7 @@ import { ForgotPassword } from '../app/components/ForgotPassword';
 import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
 import {UserInbox} from "./components/UserInbox";
 import {MessageProvider, useMessages} from "./components/UseMessage";
+import UserPage from "./components/UserPage";
 
 type ViewType = 'login' | 'signup' | 'forgot-password';
 
@@ -30,6 +31,7 @@ export default function App() {
                   <Route path="/" element={<LoginRoute />} />
                   <Route path="/adm" element={<Adm />} />
                   <Route path="/adm/user-inbox" element={<UserInbox />} />
+                  <Route path="/UserPage" element={<UserPage />} />
                   <Route path="/signup" element={<SignUp />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
               </Routes>

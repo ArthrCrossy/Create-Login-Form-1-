@@ -62,7 +62,7 @@
                 }
 
                 if (result.user.role === "user") {
-                    navigate("/adm");
+                    navigate("/UserPage");
                 }
 
             } catch (err) {
