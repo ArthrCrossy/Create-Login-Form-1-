@@ -1,7 +1,7 @@
 export type SendSupportMessagePayload = {
     title: string;
     body: string;
-    receiverAdminId?: number | null | string;
+    senderUserId?: number | null | string;
 };
 
 export type SendSupportMessageResponse = any;
@@ -22,10 +22,6 @@ export async function sendSupportMessage(
         throw new Error("Não autenticado: token não encontrado no localStorage.");
     }
 
-    console.log(payload.title)
-    console.log(payload.body)
-    console.log(token)
-
     const res = await fetch("http://localhost:3000/api/support/messages", {
         method: "POST",
         headers: {
@@ -35,7 +31,7 @@ export async function sendSupportMessage(
         body: JSON.stringify({
             title: payload.title,
             body: payload.body,
-            receiverAdminId: payload.receiverAdminId ?? null,
+            senderUserId: payload.senderUserId ?? null,
             user: localStorage.getItem("role")
         }),
     });

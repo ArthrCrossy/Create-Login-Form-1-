@@ -29,7 +29,7 @@ export default function ContatoSendUserToAdm() {
             await sendSupportMessage({
                 title: title.trim(),
                 body: content.trim(),
-                receiverAdminId: localStorage.getItem("userId")?.toString()
+                senderUserId: localStorage.getItem("userId")?.toString()
             });
 
             setTitle("");
