@@ -286,7 +286,6 @@ export default function Adm() {
                 </div>
             </main>
 
-            {/* Bottom Navigation */}
             <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid grid-cols-3 gap-2">

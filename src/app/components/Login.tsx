@@ -56,6 +56,7 @@
                 const result: LoginResponse = await res.json();
                 localStorage.setItem("token", result.token);
                 localStorage.setItem("role", result.user.role);
+                localStorage.setItem("userId", result.user.id);
 
                 if (result.user.role === "admin") {
                     navigate("/adm");
