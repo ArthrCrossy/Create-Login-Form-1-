@@ -1,28 +1,42 @@
 import { useEffect } from "react";
-import { useMessages } from "../components/UseMessage";
+import { useMessages } from "./UseMessage";
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
-import { Button } from "../components/ui/button";
-import { ScrollArea } from "../components/ui/scroll-area";
-import { Inbox, Mail, MailOpen, Clock, RefreshCcw } from "lucide-react";
+} from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
+import { Inbox, Mail, MailOpen, Clock, RefreshCcw, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { deleteBroadcast } from "../lib/apiAdm";
 
 export function UserInbox() {
     const { messages, markAsRead, unreadCount, refresh } = useMessages();
 
-        useEffect(() => {
-            refresh().catch(console.error);
-        }, [refresh]);
+    useEffect(() => {
+        refresh().catch(console.error);
+    }, [refresh]);
 
     const formatDate = (date: Date) => {
         return format(date, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
+    };
+
+    const handleDelete = async (broadcastId: string) => {
+        try {
+            const ok = confirm("Deletar esta mensagem?");
+            if (!ok) return;
+
+            await deleteBroadcast(broadcastId);
+            await refresh();
+        } catch (e) {
+            console.error(e);
+            alert("Erro ao deletar");
+        }
     };
 
     return (
@@ -59,7 +73,7 @@ export function UserInbox() {
                 <CardContent>
                     <ScrollArea className="h-[800px] pr-4">
                         {messages.length === 0 ? (
-                            <div className="w-screen h-screen">
+                            <div className="w-screen h-screen flex flex-col items-center justify-center">
                                 <Inbox className="size-12 mb-3 opacity-50" />
                                 <p>Nenhuma mensagem recebida</p>
                             </div>
@@ -68,19 +82,35 @@ export function UserInbox() {
                                 {messages.map((message) => (
                                     <Card
                                         key={message.id}
-                                        className={`${
+                                        className={`relative ${
                                             !message.isRead
                                                 ? "border-primary bg-primary/5"
                                                 : "bg-muted/30"
                                         }`}
                                     >
+                                        {/* BOTÃO DELETAR (canto superior direito) */}
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                handleDelete(message.id);
+                                            }}
+                                            className="absolute top-2 right-2 h-8 w-8 hover:bg-red-100"
+                                            title="Deletar mensagem"
+                                        >
+                                            <Trash2 className="h-4 w-4 text-gray-500 hover:text-red-600" />
+                                        </Button>
+
                                         <CardHeader className="pb-3">
-                                            <div className="items-center justify-center text-center gap-2">
-                                                <div className="items-center justify-center text-center gap-2 flex-1">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <div className="flex items-center gap-2 flex-1">
                                                     {message.isRead ? (
-                                                        <MailOpen className="items-center justify-center text-center size-4 text-muted-foreground" />
+                                                        <MailOpen className="size-4 text-muted-foreground" />
                                                     ) : (
-                                                        <Mail className="items-center justify-center text-center size-4 text-primary" />
+                                                        <Mail className="size-4 text-primary" />
                                                     )}
                                                     <CardTitle className="text-base">
                                                         {message.title}

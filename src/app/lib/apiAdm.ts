@@ -49,3 +49,22 @@ export async function unreadBroadcastCount() {
     if (!res.ok) throw new Error(await res.text());
     return res.json(); // { count }
 }
+
+export async function deleteBroadcast(id: String) {
+    const token = localStorage.getItem("token"); // ou de onde você pega
+    const res = await fetch(`${API_BASE}/me/broadcast/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Erro ao deletar broadcast");
+    }
+
+    return res.json();
+}
+
+

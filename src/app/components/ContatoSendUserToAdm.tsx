@@ -52,10 +52,10 @@ export default function ContatoSendUserToAdm() {
                         <CardHeader className="w-full items-center mx-auto">
                             <CardTitle className="flex items-center gap-2">
                                 <Send className="size-5" />
-                                Painel do Administrador
+                                Queremos saber o que você pensa !!
                             </CardTitle>
                             <CardDescription>
-                                Envie mensagens para todos os usuários do sistema
+                                nos mande uma mensagem
                             </CardDescription>
                         </CardHeader>
                     </div>

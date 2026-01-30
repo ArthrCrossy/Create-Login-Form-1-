@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MessageSquare, PenLine, BarChart3, Home, FileText, Settings, Heart, MessageCircle, Share2, ThumbsUp } from 'lucide-react';
+import { Trash2,MessageSquare, PenLine, BarChart3, Home, FileText, Settings, Heart, MessageCircle, Share2, ThumbsUp } from 'lucide-react';
 import { Link } from 'react-router-dom'
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
