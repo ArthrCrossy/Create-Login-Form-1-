@@ -14,7 +14,7 @@ export async function sendSupportMessage(
     payload: SendSupportMessagePayload
 ): Promise<SendSupportMessageResponse> {
 
-    console.log("oi, tô no front")
+    console.log("oi, tô no enviando msg para o adm")
 
     const token = getAuthToken();
 
