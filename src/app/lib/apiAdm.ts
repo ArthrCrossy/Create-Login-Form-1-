@@ -67,4 +67,31 @@ export async function deleteBroadcast(id: String) {
     return res.json();
 }
 
+export async function replyToMessage(data: { messageId: number; body: string }) {
+    const res = await fetch(`http://localhost:3000/api/broadcasts/${data.messageId}/replies`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ body: data.body }),
+    });
+
+    if (!res.ok) throw new Error("Erro ao responder");
+    return res.json();
+}
+
+export async function listReplies(messageId: number, limit = 50, offset = 0) {
+    const res = await fetch(`http://localhost:3000/api/broadcasts/${messageId}/replies?limit=${limit}&offset=${offset}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+
+    if (!res.ok) throw new Error("Erro ao carregar replies");
+    return res.json();
+}
+
+
+
 

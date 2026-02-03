@@ -8,6 +8,19 @@ import {useEffect, useState} from "react";
 import {listBroadcasts, publishBroadcast} from "../lib/apiAdm";
 import {ScrollArea} from "./ui/scroll-area";
 import {Card} from "./ui/card";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "../components/ui/dialog";
+
+import { Textarea } from "../components/ui/textarea";
+import { Button } from "../components/ui/button";
+import { markBroadcastRead, replyToMessage } from "../lib/apiAdm";
+
 
 
 
@@ -20,13 +33,36 @@ type Message = {
     author: string;
     likes: number;
     comments: number;
+    isRead: boolean;
 };
 
 export default function UserPage() {
     const [message, setMessage] = useState('');
     const [activeTab, setActiveTab] = useState('home');
+    const [selected, setSelected] = useState<Message | null>(null);
+    const [replyText, setReplyText] = useState("");
+    const [open, setOpen] = useState(false);
+
 
     const [recentMessages, setRecentMessages] = useState<Message[]>([]);
+
+
+    async function handleOpenMessage(msg: Message) {
+        setSelected(msg);
+        setOpen(true);
+
+        if (!msg.isRead) {
+            try {
+                await markBroadcastRead(msg.id);
+
+                setRecentMessages((prev) =>
+                    prev.map((m) => (m.id === msg.id ? { ...m, isRead: true } : m))
+                );
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }
 
     useEffect(() => {
         (async () => {
@@ -42,6 +78,7 @@ export default function UserPage() {
                     author: "Admin",
                     likes: 0,
                     comments: 0,
+                    isRead: Boolean(row.is_read ?? row.isRead ?? 0),
                 }));
 
                 setRecentMessages(mapped);
@@ -50,6 +87,25 @@ export default function UserPage() {
             }
         })();
     }, []);
+
+    async function handleReply() {
+        if (!selected) return;
+        if (!replyText.trim()) return;
+
+        try {
+            await replyToMessage({
+                messageId: selected.id,
+                body: replyText,
+            });
+
+            setReplyText("");
+            setOpen(false);
+        } catch (e) {
+            console.error(e);
+            alert("Erro ao responder");
+        }
+    }
+
 
 
     return (
@@ -95,8 +151,42 @@ export default function UserPage() {
                             {recentMessages.map((msg) => (
                                 <Card
                                     key={msg.id}
-                                    className="flex-shrink-0 w-[200px] p-4 bg-white hover:shadow-lg transition-shadow cursor-pointer"
-                                >
+                                    onClick={() => handleOpenMessage(msg)} // 👈
+                                    className={[
+                                        "flex-shrink-0 w-[200px] p-4 bg-white hover:shadow-lg transition-shadow cursor-pointer",
+                                        msg.isRead ? "opacity-70" : "ring-1 ring-blue-200" // 👈 destaque se não lida
+                                    ].join(" ")}
+                                ><Dialog open={open} onOpenChange={setOpen}>
+                                    <DialogContent className="max-w-lg">
+                                        <DialogHeader>
+                                            <DialogTitle>{selected?.title}</DialogTitle>
+                                            <DialogDescription>
+                                                {selected?.description}
+                                            </DialogDescription>
+                                        </DialogHeader>
+
+                                        <div className="space-y-2">
+                                            <p className="text-sm text-gray-500">
+                                                Responder:
+                                            </p>
+                                            <Textarea
+                                                value={replyText}
+                                                onChange={(e) => setReplyText(e.target.value)}
+                                                placeholder="Digite sua resposta..."
+                                                className="min-h-[120px]"
+                                            />
+                                        </div>
+
+                                        <DialogFooter className="gap-2">
+                                            <Button variant="outline" onClick={() => setOpen(false)}>
+                                                Fechar
+                                            </Button>
+                                            <Button onClick={handleReply}>
+                                                Responder
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
                                     <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
                                         <div className="text-center px-2">
                                             <p className="text-sm font-medium text-gray-600 mb-1">{msg.type}</p>
