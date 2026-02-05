@@ -8,6 +8,7 @@ import {UserInbox} from "./components/UserInbox";
 import {MessageProvider, useMessages} from "./components/UseMessage";
 import UserPage from "./components/UserPage";
 import ContatoSendUserToAdm from "../app/components/ContatoSendUserToAdm";
+import UserNutritionalMain from "../app/components/UserNutritionalMain";
 
 type ViewType = 'login' | 'signup' | 'forgot-password';
 
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="/adm/user-inbox" element={<UserInbox />} />
             <Route path="/userpage" element={<UserPage />} />
             <Route path="/userpage/contato" element={<ContatoSendUserToAdm />} />
+            <Route path="/userpage/userNutritionalMain" element={<UserNutritionalMain />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>

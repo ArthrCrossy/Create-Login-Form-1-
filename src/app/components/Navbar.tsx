@@ -18,6 +18,9 @@ export function Navbar() {
                         <Link to="/userpage/contato" className="text-sm text-gray-600 hover:text-gray-900">
                             Contato
                         </Link>
+                        <Link to="/userpage/userNutritionalMain" className="text-sm text-gray-600 hover:text-gray-900">
+                            Envio de Dados
+                        </Link>
                     </div>
                 </div>
 
